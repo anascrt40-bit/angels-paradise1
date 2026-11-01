@@ -1,0 +1,91 @@
+html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🪽 𝓐𝗇𝗀𝖾𝗅𝗌 𝓟𝖺𝗋𝖺𝖽𝗂𝗌𝖾 𝓣𝖾𝖺𝗆</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 600px; width: 100%; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box; }
+        .main-title { text-align: center; color: #2b5876; font-size: 28px; margin-bottom: 20px; }
+        h2 { color: #2b5876; border-bottom: 2px solid #eef2f3; padding-bottom: 8px; margin-top: 30px; }
+        p { line-height: 1.6; font-size: 15px; }
+        .list-item { font-size: 16px; padding: 5px 0; color: #4e4e4e; }
+        .reservation-box { background: #f9fbfd; border: 1px solid #e1e8ed; border-radius: 10px; padding: 15px; margin-top: 15px; }
+        .comment-list { list-style-type: none; padding: 0; margin: 0 0 15px 0; max-height: 200px; overflow-y: auto; }
+        .comment-item { background: white; padding: 10px; margin-bottom: 8px; border-radius: 6px; border-left: 4px solid #4e54c8; display: flex; justify-content: space-between; align-items: center; font-size: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .delete-btn { background: #ff4d4d; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 12px; }
+        .input-group { display: flex; gap: 8px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        .submit-btn { background: #4e54c8; color: white; border: none; border-radius: 6px; padding: 10px 15px; cursor: pointer; font-size: 14px; }
+        a { color: #4e54c8; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">🪽  𝓐𝗇𝗀𝖾𝗅𝗌 𝓟𝖺𝗋𝖺𝖽𝗂𝗌𝖾 𝓣𝖾𝖺𝗆</h1>
+        <h2>¿𝓠ué es esto?</h2>
+        <p>Este sɪƚɪo web esƚά hecho pαꭇ‎α ẜαcɪlɪƚαꭇ‎ el ƚꭇ‎αbαjo a los αdꭑɪns.</p>
+        <p>Aquɪ́ puedes ꭇ‎eseꭇ‎vαꭇ‎ ƚu peꭇ‎sonαje, ver lα lɪsƚα de ocupαdos, buscαdos ɥ ꭇ‎eseꭇ‎vαꭇ‎ ƚu peꭇ‎sonαje. No te pꭇ‎eocupes poꭇ‎ ɪnẜoꭇ‎ꭑαcɪón de ƚu nαvegαdoꭇ‎, solo puede veꭇ‎se lo que escꭇ‎ɪbes.</p>
+        <h2>𝓛ista de ocupados</h2>
+        <div class="list-item">— 𝓩hαnց Mɪαo ɥɪ</div>
+        <h2>𝓛ista de buscados</h2>
+        <p style="color: #888; font-style: italic;">Próximamente...</p>
+        <h2>¡𝓡eserva tu personaje!</h2>
+        <div class="reservation-box">
+            <ul class="comment-list" id="charactersList"></ul>
+            <div class="input-group">
+                <input type="text" id="charInput" placeholder="¡𝓔scribe tu personaje aquí!">
+                <button class="submit-btn" id="sendBtn">Enviar</button>
+            </div>
+        </div>
+        <h2>𝓐yuda</h2>
+        <p>¿𝓐lgo pasa? Escribe a este correo para reportar la situación:<br><a href="mailto:ninisita682@gmail.com">ninisita682@gmail.com</a></p>
+    </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            displayCharacters();
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) sendBtn.addEventListener('click', saveCharacter);
+        });
+        function saveCharacter() {
+            const input = document.getElementById('charInput');
+            if (!input) return;
+            const text = input.value.trim();
+            if (text === '') return;
+            const stored = localStorage.getItem('rpCharacters');
+            let characters = stored ? JSON.parse(stored) : [];
+            characters.push(text);
+            localStorage.setItem('rpCharacters', JSON.stringify(characters));
+            input.value = '';
+            displayCharacters();
+        }
+        function displayCharacters() {
+            const list = document.getElementById('charactersList');
+            if (!list) return;
+            list.innerHTML = '';
+            const stored = localStorage.getItem('rpCharacters');
+            let characters = stored ? JSON.parse(stored) : [];
+            characters.forEach(/** @param {string} charText @param {number} index */ function(charText, index) {
+                const li = document.createElement('li');
+                li.className = 'comment-item';
+                const span = document.createElement('span');
+                span.textContent = '- ' + charText;
+                const btn = document.createElement('button');
+                btn.className = 'delete-btn';
+                btn.textContent = 'Borrar';
+                btn.addEventListener('click', () => { deleteCharacter(index); });
+                li.appendChild(span); li.appendChild(btn); list.appendChild(li);
+            });
+        }
+        function deleteCharacter(index) {
+            const stored = localStorage.getItem('rpCharacters');
+            let characters = stored ? JSON.parse(stored) : [];
+            characters.splice(index, 1);
+            localStorage.setItem('rpCharacters', JSON.stringify(characters));
+            displayCharacters();
+        }
+    </script>
+</body>
+</html>
